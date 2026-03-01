@@ -17,11 +17,16 @@ if (!isset($_SESSION["user_id"])) {
     </head>
     <body>
 
-        <h2> Dashboard </h2>
+        <div class="container">
 
-        <p>Welcome, <strong><?php echo htmlspecialchars($_SESSION["username"]); ?></strong>!</p>
+            <h2> Dashboard </h2>
 
-        <a href="logout.php">Logout</a>
+            <p><strong>Username:</strong><?php echo htmlspecialchars($_SESSION["username"]); ?></p>
+            <p><strong>Email:</strong><?php echo htmlspecialchars($_SESSION["email"]); ?></p>
+            <p><strong>Created At:</strong><?php echo htmlspecialchars($_SESSION["created_at"]); ?></p>
 
+            <br>
+            <a href="logout.php">Logout</a>
+        </div>
     </body>
 </html>
