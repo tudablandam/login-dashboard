@@ -1,10 +1,11 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -16,17 +17,14 @@ if (!isset($_SESSION["user_id"])) {
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-
         <div class="container">
-
-            <h2> Dashboard </h2>
-
-            <p><strong>Username:</strong><?php echo htmlspecialchars($_SESSION["username"]); ?></p>
-            <p><strong>Email:</strong><?php echo htmlspecialchars($_SESSION["email"]); ?></p>
-            <p><strong>Created At:</strong><?php echo htmlspecialchars($_SESSION["created_at"]); ?></p>
-
-            <br>
-            <a href="logout.php">Logout</a>
+           <h2>Dashboard</h2>
+           <p><strong>Username:</strong> <?php echo htmlspecialchars($_SESSION['username']); ?></p>
+           <p><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['email']); ?></p>
+           <p><strong>Member since:</strong> <?php echo htmlspecialchars($_SESSION['created_at']); ?></p>
+           <br>
+           <a href="logout.php">Logout</a>
         </div>
+
     </body>
 </html>
