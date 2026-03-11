@@ -1,36 +1,37 @@
 <?php
-include "db.php";
-
+require_once "db.php";
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = trim($_POST["username"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $password = trim($_POST["password"] ?? "");
+    $username = trim($_POST["username"]);
+    $email = trim($_POST["email"]);
+    $password = trim($_POST["password"]);
 
-    if (in_array('', [$username, $email, $password], true)) {
-        $error = "All fields are required.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Invalid email format.";
-    } else {
+if (in_array("", [$username, $email, $password], true)) {
+    $error = "All fields are required.";
+}  elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = "Invalid email format.";
+} else {
 
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $hashPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $username, $email, $hashedPassword);
-    
-    if($stmt->execute()) {
+    $sql = ("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $username, $email, $hashPassword);
+
+    if ($stmt->execute()) {
         header("Location: login.php?success=1");
-        exit;
+        exit();
     } else {
-        $error = "Username or email already exists.";
+        $error = "error: " . $stmt->error;
     }
 
     $stmt->close();
     $conn->close();
 
-    }
+}
+
 }
 ?>
 
@@ -46,17 +47,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="container">
             <h2>Register</h2>
             <?php if ($error): ?>
-                <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
+                <p class="error"><?php echo htmlspecialchars($error); ?></p>
                 <?php endif; ?>
-        
-            <form method="POST" action="register.php">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="email" name="email" placeholder="Email" required>
+
+            <form method="POST">
+                <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+                <input type="email" name="email" placeholder="Email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <button type="submit">Register</button>
             </form>
 
-            <p>Already have an account? <a href="login.php">Login here</a></p>
+                <p>Already have an account? <a href="login.php">Login here</a>.</p>
+
         </div>
     </body>
 </html>

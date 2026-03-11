@@ -7,11 +7,11 @@ $success = isset($_GET['success']);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $email = trim($_POST["email"] ?? "");
-    $password = trim($_POST["password"] ?? "");
+    $email = trim($_POST["email"] ?? '');
+    $password = $_POST["password"] ?? '';
 
-    if (in_array('', [$email, $password], true)) {
-        $error = "All fields are required.";
+    if (in_array("", [$email, $password], true)) {
+            $error = "All fields are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } else {
@@ -20,8 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("s", $email);
     $stmt->execute();
 
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    $user = $stmt->get_result()->fetch_assoc();
 
     if ($user && password_verify($password, $user['password'])) {
 
@@ -33,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['created_at'] = $user['created_at'];
 
         header("Location: dashboard.php");
-        exit;
-    }
-    else {
+        exit();
+        
+    } else {
         $error = "Invalid email or password.";
     }
 
@@ -44,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -57,23 +55,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body>
         <div class="container">
-            <h2>login</h2>
+            <h2>Login</h2>
 
             <?php if ($success): ?>
-                <p style="color:green;"> Registration successful! Please Log in.</p>
+                <p class="success">Registration successful! Please Login.</p>
                 <?php endif; ?>
 
             <?php if ($error): ?>
-                <p style="color:red;"> <?php echo htmlspecialchars($error); ?></p>
+                <p class="error"><?= htmlspecialchars($error); ?></p>
                 <?php endif; ?>
 
-            <form method="POST">
-                <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email" value="<?= htmlspecialchars($email ?? '') ?>" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
 
-            <p>Don't have an account? <a href="register.php">Register here</a></p>
+        <p>Don't have an account? <a href="register.php">Register here</a></p>
 
         </div>
     </body>

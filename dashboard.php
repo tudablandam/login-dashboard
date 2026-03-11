@@ -1,11 +1,10 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
-    exit;
+    exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -18,13 +17,15 @@ if (!isset($_SESSION['user_id'])) {
     </head>
     <body>
         <div class="container">
-           <h2>Dashboard</h2>
-           <p><strong>Username:</strong> <?php echo htmlspecialchars($_SESSION['username']); ?></p>
-           <p><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['email']); ?></p>
-           <p><strong>Member since:</strong> <?php echo htmlspecialchars($_SESSION['created_at']); ?></p>
-           <br>
-           <a href="logout.php">Logout</a>
-        </div>
+            <h2>Dashboard</h2>
+            <p><strong>Welcome, </strong> <?= htmlspecialchars($_SESSION["username"]); ?>!</p>
+            <p><strong>Email:</strong> <?= htmlspecialchars($_SESSION["email"]); ?></p>
+            <p><strong>Member since:</strong> <?= htmlspecialchars($_SESSION["created_at"]); ?> </p>
+        
+        <form method="POST" action="logout.php">
+            <button type="submit">Logout</button>
+        </form>
 
+        </div>
     </body>
 </html>
