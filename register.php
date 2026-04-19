@@ -1,22 +1,32 @@
 <?php
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
 require_once "db.php";
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = trim($_POST["username"]);
-    $email = trim($_POST["email"]);
-    $password = trim($_POST["password"]);
+    $username = trim($_POST["username"] ?? '');
+    $email = strtolower(trim($_POST["email"] ?? ''));
+    $password = $_POST["password"] ?? '';
 
 if (in_array("", [$username, $email, $password], true)) {
-    $error = "All fields are required.";
+        $error = "All fields are required.";
 }  elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $error = "Invalid email format.";
-} else {
+        $error = "Invalid email format.";
+}  elseif (strlen($password) < 6) {
+        $error = "Password must be at least 6 characters.";
+    }
+else {
 
     $hashPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = ("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+    $sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sss", $username, $email, $hashPassword);
 
@@ -24,9 +34,12 @@ if (in_array("", [$username, $email, $password], true)) {
         header("Location: login.php?success=1");
         exit();
     } else {
-        $error = "error: " . $stmt->error;
+        if ($conn->errno === 1062) {
+            $error = "Username or Email already exists.";
+        } else {
+        $error = "error: ";
     }
-
+    }
     $stmt->close();
     $conn->close();
 

@@ -1,12 +1,12 @@
 <?php
 
-$host = "localhost";
-$username = "root";
-$password = "";
-$dbname = "login_system_v2";
+$dbHost = "localhost";
+$dbUser = "root";
+$dbPass = "";
+$dbName = "login_system";
 
-$conn = new mysqli($host, $username, $password, $dbname);
+$conn = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Connection Failed");
 }
