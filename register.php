@@ -66,12 +66,29 @@ else {
             <form method="POST">
                 <input type="text" name="username" placeholder="Username" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
                 <input type="email" name="email" placeholder="Email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
-                <input type="password" name="password" placeholder="Password" required>
+            <div class="password-wrapper">  
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <span onclick="togglePassword()" class="toggle">👁</span>
+            </div>
                 <button type="submit">Register</button>
             </form>
 
                 <p>Already have an account? <a href="login.php">Login here</a>.</p>
 
         </div>
+
+    <script>
+    function togglePassword() {
+        const password = document.getElementById("password");
+            
+        if (password.type === "password") {
+            password.type = "text";
+        }
+            else {
+                password.type = "password";
+            }
+    }
+    </script>
+
     </body>
 </html>

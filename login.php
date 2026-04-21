@@ -73,12 +73,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form method="POST">
             <input type="email" name="email" placeholder="Email" value="<?= htmlspecialchars($email ?? '') ?>" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <span onclick="togglePassword()" class="toggle">👁</span>
+            </div>
             <button type="submit">Login</button>
         </form>
 
         <p>Don't have an account? <a href="register.php">Register here</a></p>
 
         </div>
+
+    <script>
+    function togglePassword() {
+        const password = document.getElementById("password");
+
+        if (password.type === "password") {
+          password.type = "text";
+        } else {
+            password.type = "password";
+        }
+    }
+    </script>
+        
     </body>
 </html>
