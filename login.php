@@ -10,6 +10,7 @@ require_once "db.php";
 
 $error = "";
 $success = isset($_GET['success']);
+$timeout = isset($_GET['timeout']);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -69,6 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <?php if ($error): ?>
                 <p class="error"><?= htmlspecialchars($error); ?></p>
+                <?php endif; ?>
+
+            <?php if ($timeout): ?>
+                <p class="error">You were logged out due to inactivity</p>
                 <?php endif; ?>
 
         <form method="POST">

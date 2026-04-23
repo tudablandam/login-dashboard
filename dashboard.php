@@ -1,10 +1,25 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["user_id"]) || empty($_SESSION["user_id"])) {
+    session_unset();
+    session_destroy();
+
     header("Location: login.php");
     exit();
 }
+
+$timeout = 300;
+
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout) {
+    session_unset();
+    session_destroy();
+
+    header("Location: login.php?timeout=1");
+    exit();
+}
+
+$_SESSION['last_activity'] = time();
 ?>
 
 <!DOCTYPE html>
