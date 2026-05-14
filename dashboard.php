@@ -72,6 +72,47 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['change_password'])) {
     }
     $conn->close();
 }
+
+$profile_error = "";
+$profile_success = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
+
+    require_once "db.php";
+
+    $new_username = trim($_POST['new_username'] ?? '');
+    $new_email = strtolower(trim($_POST['new_email'] ?? ''));
+
+    if (empty($new_username) || empty($new_email)) {
+        $profile_error = "All fields are required.";
+    } elseif (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+        $profile_error = "Invalid email format.";
+    } else {
+
+        $user_id = $_SESSION['user_id'];
+
+        $stmt = $conn->prepare("UPDATE users SET username = ?, email = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $new_username, $new_email, $user_id);
+
+try {
+    if ($stmt->execute()) {
+        $_SESSION['username'] = $new_username;
+        $_SESSION['email'] = $new_email;
+        $profile_success = "Profile updated successfully.";
+    }
+} catch (mysqli_sql_exception $e) {
+
+    if ($e->getCode() === 1062) {
+        $profile_error = "Username or email already exists.";
+    } else {
+        $profile_error = "Database error occurred.";
+    }
+}
+    
+        $stmt->close();
+        $conn->close();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -108,6 +149,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['change_password'])) {
             <button type="submit">Logout</button>
         </form>
 
+<h3> Edit Profile </h3>
+
+<?php if (!empty($profile_error)): ?>
+    <p class="error"><?= htmlspecialchars($profile_error); ?></p>
+<?php endif; ?>
+
+<?php if (!empty($profile_success)): ?>
+    <p class="success"><?= htmlspecialchars($profile_success); ?></p>
+<?php endif; ?>
+
+<form method="POST">
+    <input type="text" name="new_username" placeholder="New Username" value="<?= htmlspecialchars($_SESSION['username']); ?>" required>
+    <input type="email" name="new_email" placeholder="New Email" value="<?= htmlspecialchars($_SESSION['email']); ?>" required>
+    <button type="submit" name="update_profile">Update Profile</button>
+</form>
         </div>
     </body>
 </html>
